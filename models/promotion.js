@@ -1,34 +1,34 @@
 const express = require('express');
-const Partner = require('../models/partner');
+const Promotion = require('../models/promotion');
 
-const partnerRouter = express.Router();
+const promotionRouter = express.Router();
 
-partnerRouter.route('/')
+promotionRouter.route('/')
 .get((req, res, next) => {
-    Partner.find()
-    .then(partners => {
+    Promotion.find()
+    .then(promotions => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partners);
+        res.json(promotions);
     })
     .catch(err => next(err));
 })
 .post((req, res, next) => {
-    Partner.create(req.body)
-    .then(partner => {
-        console.log('Partner Created ', partner);
+    Promotion.create(req.body)
+    .then(promotion => {
+        console.log('promotion Created ', promotion);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partner);
+        res.json(promotion);
     })
     .catch(err => next(err));
 })
 .put((req, res) => {
     res.statusCode = 403;
-    res.end('PUT operation not supported on /partners');
+    res.end('PUT operation not supported on /promotions');
 })
 .delete((req, res, next) => {
-    Partner.deleteMany()
+    Promotion.deleteMany()
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -37,33 +37,33 @@ partnerRouter.route('/')
     .catch(err => next(err));
 });
 
-partnerRouter.route('/:partnerId')
+promotionRouter.route('/:promotionId')
 .get((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
+    Promotion.findById(req.params.promotionId)
+    .then(promotion => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partner);
+        res.json(promotion);
     })
     .catch(err => next(err));
 })
 .post((req, res) => {
     res.statusCode = 403;
-    res.end(`POST operation not supported on /partners/${req.params.partnerId}`);
+    res.end(`POST operation not supported on /promotions/${req.params.promotionId}`);
 })
 .put((req, res, next) => {
-    Partner.findByIdAndUpdate(req.params.partnerId, {
+    Promotion.findByIdAndUpdate(req.params.promotionId, {
         $set: req.body
     }, { new: true })
-    .then(partner => {
+    .then(promotion => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partner);
+        res.json(promotion);
     })
     .catch(err => next(err));
 })
 .delete((req, res, next) => {
-    Partner.findByIdAndDelete(req.params.partnerId)
+    Promotion.findByIdAndDelete(req.params.promotionId)
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -71,16 +71,16 @@ partnerRouter.route('/:partnerId')
     })
     .catch(err => next(err));
 });
-partnerRouter.route('/:partnerId/comments')
+promotionRouter.route('/:promotionId/comments')
 .get((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner) {
+    promotion.findById(req.params.promotionId)
+    .then(promotion => {
+        if (promotion) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(partner.comments);
+            res.json(promotion.comments);
         } else {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            err = new Error(`promotion ${req.params.promotionId} not found`);
             err.status = 404;
             return next(err);
         }
@@ -88,19 +88,19 @@ partnerRouter.route('/:partnerId/comments')
     .catch(err => next(err));
 })
 .post((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner) {
-            partner.comments.push(req.body);
-            partner.save()
-            .then(partner => {
+    promotion.findById(req.params.promotionId)
+    .then(promotion => {
+        if (promotion) {
+            promotion.comments.push(req.body);
+            promotion.save()
+            .then(promotion => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(promotion);
             })
             .catch(err => next(err));
         } else {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            err = new Error(`promotion ${req.params.promotionId} not found`);
             err.status = 404;
             return next(err);
         }
@@ -109,24 +109,24 @@ partnerRouter.route('/:partnerId/comments')
 })
 .put((req, res) => {
     res.statusCode = 403;
-    res.end(`PUT operation not supported on /partners/${req.params.partnerId}/comments`);
+    res.end(`PUT operation not supported on /promotions/${req.params.promotionId}/comments`);
 })
 .delete((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner) {
-            for (let i = (partner.comments.length-1); i >= 0; i--) {
-                partner.comments.id(partner.comments[i]._id).remove();
+    promotion.findById(req.params.promotionId)
+    .then(promotion => {
+        if (promotion) {
+            for (let i = (promotion.comments.length-1); i >= 0; i--) {
+                promotion.comments.id(promotion.comments[i]._id).remove();
             }
-            partner.save()
-            .then(partner => {
+            promotion.save()
+            .then(promotion => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(promotion);
             })
             .catch(err => next(err));
         } else {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            err = new Error(`promotion ${req.params.promotionId} not found`);
             err.status = 404;
             return next(err);
         }
@@ -134,16 +134,16 @@ partnerRouter.route('/:partnerId/comments')
     .catch(err => next(err));
 });
 
-partnerRouter.route('/:partnerId/comments/:commentId')
+promotionRouter.route('/:promotionId/comments/:commentId')
 .get((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner && partner.comments.id(req.params.commentId)) {
+    promotion.findById(req.params.promotionId)
+    .then(promotion => {
+        if (promotion && promotion.comments.id(req.params.commentId)) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(partner.comments.id(req.params.commentId));
-        } else if (!partner) {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            res.json(promotion.comments.id(req.params.commentId));
+        } else if (!promotion) {
+            err = new Error(`promotion ${req.params.promotionId} not found`);
             err.status = 404;
             return next(err);
         } else {
@@ -156,27 +156,27 @@ partnerRouter.route('/:partnerId/comments/:commentId')
 })
 .post((req, res) => {
     res.statusCode = 403;
-    res.end(`POST operation not supported on /partners/${req.params.partnerId}/comments/${req.params.commentId}`);
+    res.end(`POST operation not supported on /promotions/${req.params.promotionId}/comments/${req.params.commentId}`);
 })
 .put((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner && partner.comments.id(req.params.commentId)) {
+    promotion.findById(req.params.promotionId)
+    .then(promotion => {
+        if (promotion && promotion.comments.id(req.params.commentId)) {
             if (req.body.rating) {
-                partner.comments.id(req.params.commentId).rating = req.body.rating;
+                promotion.comments.id(req.params.commentId).rating = req.body.rating;
             }
             if (req.body.text) {
-                partner.comments.id(req.params.commentId).text = req.body.text;
+                promotion.comments.id(req.params.commentId).text = req.body.text;
             }
-            partner.save()
-            .then(partner => {
+            promotion.save()
+            .then(promotion => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(promotion);
             })
             .catch(err => next(err));
-        } else if (!partner) {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+        } else if (!promotion) {
+            err = new Error(`promotion ${req.params.promotionId} not found`);
             err.status = 404;
             return next(err);
         } else {
@@ -188,19 +188,19 @@ partnerRouter.route('/:partnerId/comments/:commentId')
     .catch(err => next(err));
 })
 .delete((req, res, next) => {
-    Partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner && partner.comments.id(req.params.commentId)) {
-            partner.comments.id(req.params.commentId).remove();
-            partner.save()
-            .then(partner => {
+    promotion.findById(req.params.promotionId)
+    .then(promotion => {
+        if (promotion && promotion.comments.id(req.params.commentId)) {
+            promotion.comments.id(req.params.commentId).remove();
+            promotion.save()
+            .then(promotion => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(promotion);
             })
             .catch(err => next(err));
-        } else if (!partner) {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+        } else if (!promotion) {
+            err = new Error(`promotion ${req.params.promotionId} not found`);
             err.status = 404;
             return next(err);
         } else {
@@ -212,4 +212,4 @@ partnerRouter.route('/:partnerId/comments/:commentId')
     .catch(err => next(err));
 });
 
-module.exports = partnerRouter;
+module.exports = promotionRouter;
