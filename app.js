@@ -2,8 +2,8 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
-const config = require('./config');
 const passport = require('passport');
+const config = require('./config');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -37,7 +37,6 @@ app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser('12345-67890-09876-54321'));
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

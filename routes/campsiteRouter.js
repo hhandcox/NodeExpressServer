@@ -4,6 +4,7 @@ const authenticate = require('../authenticate');
 
 const campsiteRouter = express.Router();
 
+// /campsites route
 campsiteRouter.route('/')
 .get((req, res, next) => {
     Campsite.find()
@@ -39,7 +40,7 @@ campsiteRouter.route('/')
     .catch(err => next(err));
 });
 
-campsiteRouter.route('/:campsiteId')
+// /campsites/campsiteId route
 campsiteRouter.route('/:campsiteId')
 .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
@@ -75,7 +76,8 @@ campsiteRouter.route('/:campsiteId')
     })
     .catch(err => next(err));
 });
-campsiteRouter.route('/:campsiteId/comments')
+
+// /campsites/campsiteId/comments route
 campsiteRouter.route('/:campsiteId/comments')
 .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
@@ -141,6 +143,8 @@ campsiteRouter.route('/:campsiteId/comments')
     .catch(err => next(err));
 });
 
+
+// /campsites/campsiteId/comments/commentId route
 campsiteRouter.route('/:campsiteId/comments/:commentId')
 .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
